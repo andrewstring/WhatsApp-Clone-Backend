@@ -4,11 +4,14 @@
   "description": "Backend Express application for WhatsApp-clone",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
+  "type": "module",
   "author": "Andrew Stringfellow",
   "license": "ISC",
   "dependencies": {
-    "mongodb": "^6.0.0"
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0"
   }
 }
