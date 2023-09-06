@@ -39,11 +39,11 @@ const addMessage = async (chatRoomName, messageContent) => {
     await chatRoom.save()
 }
 
-const getAllMessages = async (chatRoomName) => {
+const getAllMessages = async (chatRoomId) => {
     const chatRoom = await ChatRoom.findOne({
-        name: chatRoomName
+        _id: chatRoomId
     })
-    const messages = Message.find({
+    const messages = await Message.find({
         chatRoom: chatRoom._id
     })
     return messages
