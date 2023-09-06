@@ -1,5 +1,5 @@
 import express, { application } from "express"
-import { dbConnect, addChatRoom, addMessage, getAllMessages } from "./db/db.js"
+import { dbConnect, addChatRoom, addMessage, getAllMessages, getAllChatRooms } from "./db/db.js"
 import useMiddleware from "./middleware.js"
 
 
@@ -9,9 +9,14 @@ const port = 3005
 // Middleware
 useMiddleware(app)
 
-app.get("/message/getFromChatRoom", async (req, res) => {
-    const messages = await getAllMessages("First Chat Room")
+app.get("/message/getFromChatRoom/:chatRoomName", async (req, res) => {
+    const messages = await getAllMessages(req.params.chatRoomName)
     res.send(messages)
+})
+
+app.get("/chatroom/getChatRooms", async (req, res) => {
+    const chatRooms = await getAllChatRooms()
+    res.send(chatRooms)
 })
 
 app.post("/chatroom/new", async (req, res) => {

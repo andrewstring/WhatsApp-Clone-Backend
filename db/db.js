@@ -49,4 +49,14 @@ const getAllMessages = async (chatRoomName) => {
     return messages
 }
 
-export { dbConnect, addChatRoom, addMessage, getAllMessages }
+const getAllChatRooms = async () => {
+    const chatRooms = await ChatRoom.find()
+    return chatRooms
+}
+
+export {
+    dbConnect,
+    addChatRoom,
+    addMessage,
+    getAllMessages,
+    getAllChatRooms }

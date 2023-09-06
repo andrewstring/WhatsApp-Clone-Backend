@@ -5,6 +5,10 @@ const chatRoomSchema = new Schema({
     lastMessage: {
         type: String,
         default: ""
+    },
+    lastMessageDate: {
+        type: Date,
+        default: new Date()
     }
 })
 const ChatRoom = mongoose.model("ChatRoom", chatRoomSchema)
