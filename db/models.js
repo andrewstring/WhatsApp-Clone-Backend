@@ -1,13 +1,20 @@
-import mongoose, { Schema } from "mongoose"
+import mongoose, { Schema, ObjectId } from "mongoose"
 
 const chatRoomSchema = new Schema({
     name: String,
-    lastMessage: String
+    lastMessage: {
+        type: String,
+        default: ""
+    }
 })
 const ChatRoom = mongoose.model("ChatRoom", chatRoomSchema)
 
 const messageSchema = new Schema({
-    chatRoom: ObjectId,
+    chatRoom: {
+        type: ObjectId,
+        ref: "ChatRoom"
+    },
+    content: String,
     sender: String,
     received: Boolean,
     timeSent: Date
