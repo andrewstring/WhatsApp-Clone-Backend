@@ -9,14 +9,14 @@ const port = 3005
 // Middleware
 useMiddleware(app)
 
-app.get("/message/getFromChatRoom", async (req, res) => {
-    const messages = await getAllMessages(req.body._id)
+app.get("/message/getFromChatRoom/:_id", async (req, res) => {
+    const messages = await getAllMessages(req.params._id)
     console.log(messages)
     res.send(messages)
 })
 
 app.get("/chatroom/getChatRooms", async (req, res) => {
-    const chatRooms = await getAllChatRooms(req.body._id)
+    const chatRooms = await getAllChatRooms()
     res.send(chatRooms)
 })
 
