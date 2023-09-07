@@ -10,29 +10,46 @@ const port = 3005
 useMiddleware(app)
 
 app.get("/message/getFromChatRoom/:_id", async (req, res) => {
-    const messages = await getAllMessages(req.params._id)
-    console.log(messages)
-    res.send(messages)
+    try {
+        const messages = await getAllMessages(req.params._id)
+        res.send(messages)
+    } catch (e) {
+        res.status(500).json({message: `Error retrieving data from chat room: ${id}`})
+    }
+    
 })
 
 app.get("/chatroom/getChatRooms", async (req, res) => {
-    const chatRooms = await getAllChatRooms()
-    res.send(chatRooms)
+    try {
+        const chatRooms = await getAllChatRooms()
+        res.send(chatRooms)
+    } catch (e) {
+        res.status(500).json({message: "Error retrieving list of chat rooms"})
+    }
+    
 })
 
 app.post("/chatroom/new", async (req, res) => {
-    await addChatRoom(req.body.name)
-    res.send("Chat Room added")
+    try {
+        await addChatRoom(req.body.name)
+        res.send("Chat Room added")
+    } catch (e) {
+        res.status(500).json({message: "Error creating new chat room"})
+    }
+    
 })
 
 app.post("/message/new", async (req, res) => {
-    console.log(req.body.chatRoom)
-    console.log(req.body.messageContent)
     await addMessage(
-        req.body.chatRoom,
+        req.body.chatRoomId,
         req.body.messageContent
         )
-    res.send("Message added")
+    try {
+        res.send("Message added")
+    } catch (e) {
+        res.status(500).json("Error creating new message")
+    }
+    
 })
 
 const start = async () => {
