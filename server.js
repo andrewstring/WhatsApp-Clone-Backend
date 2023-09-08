@@ -14,7 +14,7 @@ app.get("/message/getFromChatRoom/:_id", async (req, res) => {
         const messages = await getAllMessages(req.params._id)
         res.send(messages)
     } catch (e) {
-        res.status(500).json({message: `Error retrieving data from chat room: ${id}`})
+        res.status(500).json({message: `Error retrieving data from chat room: ${req.params._id}`})
     }
     
 })
@@ -40,11 +40,11 @@ app.post("/chatroom/new", async (req, res) => {
 })
 
 app.post("/message/new", async (req, res) => {
-    await addMessage(
-        req.body.chatRoomId,
-        req.body.messageContent
-        )
     try {
+        await addMessage(
+            req.body.chatRoomId,
+            req.body.messageContent
+            )
         res.send("Message added")
     } catch (e) {
         res.status(500).json("Error creating new message")
@@ -53,10 +53,15 @@ app.post("/message/new", async (req, res) => {
 })
 
 const start = async () => {
-    await dbConnect()
-    app.listen(port, async () => {
-        console.log(`App listening on port: ${port}`)
-    })
+    try {
+        await dbConnect()
+        app.listen(port, async () => {
+            console.log(`App listening on port: ${port}`)
+        })
+    } catch (e) {
+        console.error(e)
+    }
+    
 }
 start()
 

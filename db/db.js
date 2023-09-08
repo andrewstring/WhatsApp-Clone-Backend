@@ -27,7 +27,6 @@ const addMessage = async (chatRoomId, messageContent) => {
     const chatRoom = await ChatRoom.findOne({
         _id: new mongoose.Types.ObjectId(chatRoomId)
     })
-    console.log(chatRoom)
     const message = new Message({
         chatRoom: chatRoom._id,
         content: messageContent.content,
