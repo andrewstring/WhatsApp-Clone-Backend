@@ -24,15 +24,20 @@ const addChatRoom = async (name) => {
 }
 
 const addMessage = async (chatRoomId, messageContent) => {
-    const chatRoom = await ChatRoom.findOne({
+    const currentTime = new Date()
+
+    // THIS IS NOT SHOWING IN REFRESH (FOR CHAT ORDER BY LASTMESSAGEDATE)
+    const chatRoom = await ChatRoom.findOneAndUpdate({
         _id: new mongoose.Types.ObjectId(chatRoomId)
-    })
+    },
+    { "lastMessageDate": currentTime },
+    { new: true })
     const message = new Message({
         chatRoom: chatRoom._id,
         content: messageContent.content,
         sender: messageContent.sender,
         received: messageContent.received,
-        timeSent: new Date()
+        timeSent: currentTime
     })
     chatRoom.lastMessage = messageContent.content
     await message.save()
