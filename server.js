@@ -29,10 +29,15 @@ app.get("/chatroom/getChatRooms", async (req, res) => {
     
 })
 
+// Returns 409 (Conflict) status code if chat room name already exists
 app.post("/chatroom/new", async (req, res) => {
     try {
-        await addChatRoom(req.body.name)
-        res.send("Chat Room added")
+        if(await addChatRoom(req.body.name)) {
+            res.send("Chat Room added")
+        } else {
+            res.status(409).json({message: "Chat room already exists"})
+        }
+        
     } catch (e) {
         res.status(500).json({message: "Error creating new chat room"})
     }

@@ -18,9 +18,21 @@ const dbConnect = async () => {
     }
 }
 
+
+// Returns true if chat room name doesn't already exist
+// Returns false if chat room name already exists
 const addChatRoom = async (name) => {
-    const chatRoom = new ChatRoom({ name: name})
-    await chatRoom.save()
+    const chatExists = Boolean(await ChatRoom.findOne({name: name}))
+    if (!chatExists) {
+        const chatRoom = new ChatRoom({
+            name: name,
+            lastMessageDate: new Date()    
+        })
+        await chatRoom.save()
+        return true
+    }
+    return false
+    
 }
 
 const addMessage = async (chatRoomId, messageContent) => {
