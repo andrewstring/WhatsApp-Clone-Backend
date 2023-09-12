@@ -25,4 +25,15 @@ const messageSchema = new Schema({
 })
 const Message = mongoose.model("Message", messageSchema)
 
-export { ChatRoom, Message }
+const accountSchema = new Schema({
+    username: String,
+    email: String,
+    password: String,
+    state: {
+        type: String,
+        expiration: Date
+    }
+})
+const Account = mongoose.model("Accouht", accountSchema)
+
+export { ChatRoom, Message, Account }

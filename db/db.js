@@ -1,5 +1,5 @@
 import mongoose, { ObjectId } from "mongoose"
-import { ChatRoom, Message } from "./models.js"
+import { ChatRoom, Message, Account } from "./models.js"
 
 const username = "abreeze12345"
 const password = "Fellow3.0!"
@@ -71,9 +71,39 @@ const getAllChatRooms = async () => {
     return chatRooms
 }
 
+// Return 0 when username and email do not exist
+// Return 1 when username exists
+// Return 2 when email exists
+// Return 3 when both username and email exist
+const createAccount = async (username,email,password) => {
+    const usernameExists = Boolean(await Account.findOne({ username: username }))
+    const emailExists = Boolean(await Account.findOne({ email: email }))
+    if (usernameExists && emailExists) {
+        return 3
+    } else if (usernameExists) {
+        return 1
+    } else if (emailExists) {
+        return 2
+    }
+    const account = new Account({
+        username: username,
+        email: email,
+        password: password,
+        state: {
+            type: "verify",
+            //TODO: Make this fiver hours after
+            expiration: new Date()
+        }
+    })
+    await account.save()
+    return 0
+}
+
 export {
     dbConnect,
     addChatRoom,
     addMessage,
     getAllMessages,
-    getAllChatRooms }
+    getAllChatRooms,
+    createAccount
+}
