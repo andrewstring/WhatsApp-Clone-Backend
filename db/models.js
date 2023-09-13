@@ -34,6 +34,6 @@ const accountSchema = new Schema({
         expiration: Date
     }
 })
-const Account = mongoose.model("Accouht", accountSchema)
+const Account = mongoose.model("Account", accountSchema)
 
 export { ChatRoom, Message, Account }

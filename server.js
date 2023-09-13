@@ -1,5 +1,10 @@
 import express, { application } from "express"
-import { dbConnect, addChatRoom, addMessage, getAllMessages, getAllChatRooms } from "./db/db.js"
+
+import {
+    dbConnect, addChatRoom, addMessage,
+    getAllMessages, getAllChatRooms, createAccount
+} from "./db/db.js"
+
 import useMiddleware from "./middleware.js"
 
 
@@ -55,6 +60,28 @@ app.post("/message/new", async (req, res) => {
         res.status(500).json("Error creating new message")
     }
     
+})
+
+app.post("account/new", async (req,res) => {
+    try {
+        const result = await createAccount(req.body)
+        switch(result) {
+            case 0:
+                res.send("Account created")
+                return
+            case 1:
+                res.send("Username exists")
+                return
+            case 2:
+                res.send("Email exists")
+                return
+            case 3:
+                res.send("Username and Email Exist")
+                return
+        }
+    } catch (e) {
+        console.error(e)
+    }
 })
 
 const start = async () => {

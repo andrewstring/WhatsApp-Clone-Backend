@@ -71,11 +71,13 @@ const getAllChatRooms = async () => {
     return chatRooms
 }
 
-// Return 0 when username and email do not exist
-// Return 1 when username exists
-// Return 2 when email exists
-// Return 3 when both username and email exist
-const createAccount = async (username,email,password) => {
+/*
+Return 0 when username and email do not exist
+Return 1 when username exists
+Return 2 when email exists
+Return 3 when both username and email exist
+*/
+const createAccount = async ({username,email,password}) => {
     const usernameExists = Boolean(await Account.findOne({ username: username }))
     const emailExists = Boolean(await Account.findOne({ email: email }))
     if (usernameExists && emailExists) {
