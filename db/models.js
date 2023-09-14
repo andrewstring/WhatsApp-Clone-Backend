@@ -24,6 +24,7 @@ const messageSchema = new Schema({
     },
     content: String,
     sender: ObjectId,
+    senderName: String,
     received: Boolean,
     timeSent: Date
 })

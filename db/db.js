@@ -21,26 +21,59 @@ const dbConnect = async () => {
 
 // Returns true if chat room name doesn't already exist
 // Returns false if chat room name already exists
-const addChatRoom = async (name, id) => {
+const addChatRoom = async (name, id, additionalMemberIds) => {
     const account = await Account.findOne({_id: new mongoose.Types.ObjectId(id)})
+
+    const additionalMembers = await getAdditionalMembers(additionalMemberIds)
+    
     const chatExists = Boolean(await ChatRoom.findOne({name: name, members: account}))
     if (!chatExists) {
         const chatRoom = new ChatRoom({
             name: name,
             lastMessageDate: new Date(),
-            members: [account._id]
+            members: [account._id, ...additionalMembers]
         })
         await chatRoom.save()
         return true
     }
     return false
-    
+}
+
+const addAdditionalMembersToChatRoom = async (chatId, additionalMemberIds) => {
+    const additionalMembers = await getAdditionalMembers(additionalMemberIds)
+
+    const chat = await ChatRoom.findOne({_id: chatId})
+    if (chat) {
+        chat.members = [...chat.members, ...additionalMembers]
+        await chat.save()
+        return true
+    }
+    return false
+}
+
+const getAdditionalMembers = async (additionalMemberIds) => {
+    const members = await additionalMemberIds.map(async id => {
+        const member = await Account.findOne({_id: new mongoose.Types.ObjectId(id)})
+        if (member) {
+            return member
+        }
+        return null
+    })
+    members = members.reduce(member => member)
+    return members
 }
 
 const addMessage = async (chatRoomId, messageContent) => {
     const currentTime = new Date()
 
-    // THIS IS NOT SHOWING IN REFRESH (FOR CHAT ORDER BY LASTMESSAGEDATE)
+    const account = await Account.findOne({_id: new mongoose.Types.ObjectId(messageContent.sender)})
+
+    console.log("IDDD")
+    console.log(messageContent.sender)
+    console.log(typeof messageContent.sender)
+    console.log('NAMEE')
+    console.log(account.firstName)
+
     const chatRoom = await ChatRoom.findOneAndUpdate({
         _id: new mongoose.Types.ObjectId(chatRoomId)
     },
@@ -50,6 +83,7 @@ const addMessage = async (chatRoomId, messageContent) => {
         chatRoom: chatRoom._id,
         content: messageContent.content,
         sender: new mongoose.Types.ObjectId(messageContent.sender),
+        senderName: account.firstName,
         received: messageContent.received,
         timeSent: currentTime
     })
