@@ -21,12 +21,14 @@ const dbConnect = async () => {
 
 // Returns true if chat room name doesn't already exist
 // Returns false if chat room name already exists
-const addChatRoom = async (name) => {
-    const chatExists = Boolean(await ChatRoom.findOne({name: name}))
+const addChatRoom = async (name, id) => {
+    const account = await Account.findOne({_id: new mongoose.Types.ObjectId(id)})
+    const chatExists = Boolean(await ChatRoom.findOne({name: name, members: account}))
     if (!chatExists) {
         const chatRoom = new ChatRoom({
             name: name,
-            lastMessageDate: new Date()    
+            lastMessageDate: new Date(),
+            members: [account._id]
         })
         await chatRoom.save()
         return true
@@ -47,7 +49,7 @@ const addMessage = async (chatRoomId, messageContent) => {
     const message = new Message({
         chatRoom: chatRoom._id,
         content: messageContent.content,
-        sender: messageContent.sender,
+        sender: new mongoose.Types.ObjectId(messageContent.sender),
         received: messageContent.received,
         timeSent: currentTime
     })
@@ -67,19 +69,29 @@ const getAllMessages = async (chatRoomId) => {
 }
 
 const getAllChatRooms = async (accountId) => {
-    const account = await Account.findOne({_id: new mongoose.Types.ObjectId(accountId)})
-    console.log(account)
-    const chatRooms = await ChatRoom.find({members: account})
-    return chatRooms
+    try {
+        console.log(accountId)
+        const account = await Account.findOne({_id: new mongoose.Types.ObjectId(accountId)})
+        console.log("ACCOUNT")
+        console.log(account)
+        if (account._id) {
+            const chatRooms = await ChatRoom.find({members: account._id})
+            return chatRooms
+        }
+        return null
+    } catch (e) {
+        console.log(e)
+    }
+    
 }
 
 /*
-Return _id when username and email do not exist
+Return account when username and email do not exist
 Return 1 when username exists
 Return 2 when email exists
 Return 3 when both username and email exist
 */
-const createAccount = async ({username,email,password}) => {
+const createAccount = async ({firstName,username,email,password}) => {
     const usernameExists = Boolean(await Account.findOne({ username: username }))
     const emailExists = Boolean(await Account.findOne({ email: email }))
     if (usernameExists && emailExists) {
@@ -90,6 +102,7 @@ const createAccount = async ({username,email,password}) => {
         return 2
     }
     const account = new Account({
+        firstName: firstName,
         username: username,
         email: email,
         password: password,
@@ -100,11 +113,12 @@ const createAccount = async ({username,email,password}) => {
         }
     })
     await account.save()
-    return account._id
+    account._id = account._id.toString()
+    return account
 }
 
 /*
-Return _id when correct credentials
+Return account when correct credentials
 Return 1 when incorrect credentials
 Return 2 when username does not exist
 */
@@ -115,8 +129,9 @@ const loginAccount = async ({username,password}) => {
         username: username,
         password: password
     })
+    credentials._id = credentials._id.toString()
     if (!Boolean(credentials)) return 2
-    return credentials._id
+    return credentials
 }
 
 export {

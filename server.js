@@ -25,9 +25,9 @@ app.get("/message/getFromChatRoom/:_id", async (req, res) => {
     
 })
 
-app.get("/chatroom/getChatRooms", async (req, res) => {
+app.get("/chatroom/getChatRooms/:_id", async (req, res) => {
     try {
-        const chatRooms = await getAllChatRooms(req.body.id)
+        const chatRooms = await getAllChatRooms(req.params._id)
         res.send(chatRooms)
     } catch (e) {
         res.status(500).json({message: "Error retrieving list of chat rooms"})
@@ -38,7 +38,7 @@ app.get("/chatroom/getChatRooms", async (req, res) => {
 // Returns 409 (Conflict) status code if chat room name already exists
 app.post("/chatroom/new", async (req, res) => {
     try {
-        if(await addChatRoom(req.body.name)) {
+        if(await addChatRoom(req.body.name, req.body.id)) {
             res.send("Chat Room added")
         } else {
             res.status(409).json({message: "Chat room already exists"})
@@ -51,6 +51,7 @@ app.post("/chatroom/new", async (req, res) => {
 })
 
 app.post("/message/new", async (req, res) => {
+    console.log(req.body)
     try {
         await addMessage(
             req.body.chatRoomId,
@@ -66,7 +67,6 @@ app.post("/message/new", async (req, res) => {
 app.post("/account/new", async (req,res) => {
     try {
         const result = await createAccount(req.body)
-        console.log(result)
         switch(result) {
             case 1:
                 res.send({message: "Username exists"})
@@ -80,7 +80,7 @@ app.post("/account/new", async (req,res) => {
             default: {
                 res.send({
                     message: "Account created",
-                    id: result
+                    credentials: result
                 })
                 return
             }
@@ -105,7 +105,7 @@ app.post("/account/login", async (req,res) => {
             default: {
                 res.send({
                     message: "Correct credentials",
-                    id: result
+                    credentials: result
                 })
                 return
             }

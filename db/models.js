@@ -9,7 +9,11 @@ const chatRoomSchema = new Schema({
     lastMessageDate: {
         type: Date,
         default: new Date()
-    }
+    },
+    members: [{
+        type: ObjectId,
+        ref: "Account"
+    }]
 })
 const ChatRoom = mongoose.model("ChatRoom", chatRoomSchema)
 
@@ -18,12 +22,8 @@ const messageSchema = new Schema({
         type: ObjectId,
         ref: "ChatRoom"
     },
-    members: [{
-        type: ObjectId,
-        ref: "Account"
-    }],
     content: String,
-    sender: String,
+    sender: ObjectId,
     received: Boolean,
     timeSent: Date
 })
@@ -34,6 +34,7 @@ const accountStateSchema = new Schema({
     expiration: Date
 })
 const accountSchema = new Schema({
+    firstName: String,
     username: String,
     email: String,
     password: String,
