@@ -1,4 +1,4 @@
-import mongoose, { ObjectId } from "mongoose"
+import mongoose from "mongoose"
 import { ChatRoom, Message, Account } from "./models.js"
 
 const username = "abreeze12345"
@@ -66,13 +66,15 @@ const getAllMessages = async (chatRoomId) => {
     return messages
 }
 
-const getAllChatRooms = async () => {
-    const chatRooms = await ChatRoom.find()
+const getAllChatRooms = async (accountId) => {
+    const account = await Account.findOne({_id: new mongoose.Types.ObjectId(accountId)})
+    console.log(account)
+    const chatRooms = await ChatRoom.find({members: account})
     return chatRooms
 }
 
 /*
-Return 0 when username and email do not exist
+Return _id when username and email do not exist
 Return 1 when username exists
 Return 2 when email exists
 Return 3 when both username and email exist
@@ -98,7 +100,23 @@ const createAccount = async ({username,email,password}) => {
         }
     })
     await account.save()
-    return 0
+    return account._id
+}
+
+/*
+Return _id when correct credentials
+Return 1 when incorrect credentials
+Return 2 when username does not exist
+*/
+const loginAccount = async ({username,password}) => {
+    const usernameExists = Boolean(await Account.findOne({ username: username }))
+    if (!usernameExists) return 1
+    const credentials = await Account.findOne({
+        username: username,
+        password: password
+    })
+    if (!Boolean(credentials)) return 2
+    return credentials._id
 }
 
 export {
@@ -107,5 +125,6 @@ export {
     addMessage,
     getAllMessages,
     getAllChatRooms,
-    createAccount
+    createAccount,
+    loginAccount
 }

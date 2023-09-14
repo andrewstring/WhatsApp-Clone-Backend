@@ -18,6 +18,10 @@ const messageSchema = new Schema({
         type: ObjectId,
         ref: "ChatRoom"
     },
+    members: [{
+        type: ObjectId,
+        ref: "Account"
+    }],
     content: String,
     sender: String,
     received: Boolean,
@@ -25,14 +29,15 @@ const messageSchema = new Schema({
 })
 const Message = mongoose.model("Message", messageSchema)
 
+const accountStateSchema = new Schema({
+    type: String,
+    expiration: Date
+})
 const accountSchema = new Schema({
     username: String,
     email: String,
     password: String,
-    state: {
-        type: String,
-        expiration: Date
-    }
+    state: accountStateSchema
 })
 const Account = mongoose.model("Account", accountSchema)
 

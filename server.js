@@ -2,7 +2,8 @@ import express, { application } from "express"
 
 import {
     dbConnect, addChatRoom, addMessage,
-    getAllMessages, getAllChatRooms, createAccount
+    getAllMessages, getAllChatRooms, createAccount,
+    loginAccount
 } from "./db/db.js"
 
 import useMiddleware from "./middleware.js"
@@ -26,7 +27,7 @@ app.get("/message/getFromChatRoom/:_id", async (req, res) => {
 
 app.get("/chatroom/getChatRooms", async (req, res) => {
     try {
-        const chatRooms = await getAllChatRooms()
+        const chatRooms = await getAllChatRooms(req.body.id)
         res.send(chatRooms)
     } catch (e) {
         res.status(500).json({message: "Error retrieving list of chat rooms"})
@@ -62,22 +63,52 @@ app.post("/message/new", async (req, res) => {
     
 })
 
-app.post("account/new", async (req,res) => {
+app.post("/account/new", async (req,res) => {
     try {
         const result = await createAccount(req.body)
+        console.log(result)
         switch(result) {
-            case 0:
-                res.send("Account created")
-                return
             case 1:
-                res.send("Username exists")
+                res.send({message: "Username exists"})
                 return
             case 2:
-                res.send("Email exists")
+                res.send({message: "Email exists"})
                 return
             case 3:
-                res.send("Username and Email Exist")
+                res.send({message: "Username and Email exist"})
                 return
+            default: {
+                res.send({
+                    message: "Account created",
+                    id: result
+                })
+                return
+            }
+        }
+    } catch (e) {
+        console.error(e)
+    }
+})
+
+app.post("/account/login", async (req,res) => {
+    try {
+        const result = await loginAccount(req.body)
+        switch(result) {
+            case 1: {
+                res.send({message: "Username does not exist"})
+                return
+            }
+            case 2: {
+                res.send({message: "Incorrect credentials"})
+                return
+            }
+            default: {
+                res.send({
+                    message: "Correct credentials",
+                    id: result
+                })
+                return
+            }
         }
     } catch (e) {
         console.error(e)
