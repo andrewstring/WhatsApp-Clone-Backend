@@ -22,16 +22,20 @@ const dbConnect = async () => {
 // Returns true if chat room name doesn't already exist
 // Returns false if chat room name already exists
 const addChatRoom = async (name, id, additionalMemberIds) => {
+
     const account = await Account.findOne({_id: new mongoose.Types.ObjectId(id)})
 
-    const additionalMembers = await getAdditionalMembers(additionalMemberIds)
+    console.log("ACOUNT")
+    console.log(account)
     
     const chatExists = Boolean(await ChatRoom.findOne({name: name, members: account}))
+    console.log("CHAT")
+    console.log(chatExists)
     if (!chatExists) {
         const chatRoom = new ChatRoom({
             name: name,
             lastMessageDate: new Date(),
-            members: [account._id, ...additionalMembers]
+            members: [account._id, ...additionalMemberIds]
         })
         await chatRoom.save()
         return true
