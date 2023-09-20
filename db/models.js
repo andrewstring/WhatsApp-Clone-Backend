@@ -1,5 +1,9 @@
+// mongoose imports
 import mongoose, { Schema, ObjectId } from "mongoose"
 
+
+// chatroom schema
+// members are linked to chatroom (by Account ObjectId)
 const chatRoomSchema = new Schema({
     name: String,
     lastMessage: {
@@ -17,6 +21,9 @@ const chatRoomSchema = new Schema({
 })
 const ChatRoom = mongoose.model("ChatRoom", chatRoomSchema)
 
+
+// message schema
+// chatrooms are linked to message (by ChatRoom ObjectId)
 const messageSchema = new Schema({
     chatRoom: {
         type: ObjectId,
@@ -30,6 +37,8 @@ const messageSchema = new Schema({
 })
 const Message = mongoose.model("Message", messageSchema)
 
+
+// account schema...account schema includes accountstate schema
 const accountStateSchema = new Schema({
     type: String,
     expiration: Date

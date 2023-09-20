@@ -1,37 +1,28 @@
+// mongoose import
 import mongoose from "mongoose"
+// schema model imports
 import { ChatRoom, Message, Account } from "./models.js"
+// config import
+import { dbUri as uri } from "../config.js"
 
-const username = "abreeze12345"
-const password = "Fellow3.0!"
-const uri = `mongodb+srv://${username}:${password}@whatsapp-clone.wgf6y7c.mongodb.net/?retryWrites=true&w=majority`
-
+// connect to database
 const dbConnect = async () => {
-
     try {
-        // Connect to MongoDB cluster
+        // Connect to mongodb cluster
         await mongoose.connect(uri)
-
-        // List all databases
-        console.log("MongoDB Connected")
     } catch (e) {
         console.error(e)
     }
 }
 
-
-// Returns true if chat room name doesn't already exist
-// Returns false if chat room name already exists
+// returns true if chat room name doesn't already exist
+// returns false if chat room name already exists
 const addChatRoom = async (name, id, additionalMemberIds) => {
-
     const account = await Account.findOne({_id: new mongoose.Types.ObjectId(id)})
-
-    console.log("ACOUNT")
-    console.log(account)
-    
     const chatExists = Boolean(await ChatRoom.findOne({name: name, members: account}))
-    console.log("CHAT")
-    console.log(chatExists)
+
     if (!chatExists) {
+        // create new chatroom if chatroom does not exist
         const chatRoom = new ChatRoom({
             name: name,
             lastMessageDate: new Date(),
@@ -43,10 +34,12 @@ const addChatRoom = async (name, id, additionalMemberIds) => {
     return false
 }
 
+// returns true if additional members are added to chat
+// returns false if chatroom does not exist
 const addAdditionalMembersToChatRoom = async (chatId, additionalMemberIds) => {
     const additionalMembers = await getAdditionalMembers(additionalMemberIds)
-
     const chat = await ChatRoom.findOne({_id: chatId})
+
     if (chat) {
         chat.members = [...chat.members, ...additionalMembers]
         await chat.save()

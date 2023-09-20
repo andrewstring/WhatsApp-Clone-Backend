@@ -1,20 +1,23 @@
-import express, { application } from "express"
-
+// express imports
+import express from "express"
+// config import
+import { port } from "./config.js"
+// db imports
 import {
-    dbConnect, addChatRoom, addMessage,
-    getAllMessages, getAllChatRooms, createAccount,
-    loginAccount
+    dbConnect, addChatRoom, addMessage, getAllMessages,
+    getAllChatRooms, createAccount, loginAccount
 } from "./db/db.js"
-
+// middleware import
 import useMiddleware from "./middleware.js"
 
-
+// app init
 const app = express()
-const port = 3005
 
-// Middleware
+// middleware injection
 useMiddleware(app)
 
+
+// get messages from chatroom (specified by chatroom id)
 app.get("/message/getFromChatRoom/:_id", async (req, res) => {
     try {
         const messages = await getAllMessages(req.params._id)
@@ -25,6 +28,7 @@ app.get("/message/getFromChatRoom/:_id", async (req, res) => {
     
 })
 
+// get chatrooms for specific user (specified by user id)
 app.get("/chatroom/getChatRooms/:_id", async (req, res) => {
     try {
         const chatRooms = await getAllChatRooms(req.params._id)
@@ -35,7 +39,7 @@ app.get("/chatroom/getChatRooms/:_id", async (req, res) => {
     
 })
 
-// Returns 409 (Conflict) status code if chat room name already exists
+// create new chatroom
 app.post("/chatroom/new", async (req, res) => {
     try {
         if(await addChatRoom(req.body.name, req.body.id, req.body.members)) {
@@ -50,6 +54,8 @@ app.post("/chatroom/new", async (req, res) => {
     
 })
 
+
+// create new message in specific chatroom
 app.post("/message/new", async (req, res) => {
     console.log(req.body)
     try {
@@ -64,6 +70,8 @@ app.post("/message/new", async (req, res) => {
     
 })
 
+
+// create new account
 app.post("/account/new", async (req,res) => {
     try {
         const result = await createAccount(req.body)
@@ -86,10 +94,12 @@ app.post("/account/new", async (req,res) => {
             }
         }
     } catch (e) {
-        console.error(e)
+        res.status(500).json("Error creating user")
     }
 })
 
+
+// login to user account
 app.post("/account/login", async (req,res) => {
     try {
         const result = await loginAccount(req.body)
@@ -111,10 +121,11 @@ app.post("/account/login", async (req,res) => {
             }
         }
     } catch (e) {
-        console.error(e)
+        res.status(500).json("Error logging in")
     }
 })
 
+// start backend server
 const start = async () => {
     try {
         await dbConnect()
