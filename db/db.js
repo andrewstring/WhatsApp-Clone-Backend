@@ -65,12 +65,6 @@ const addMessage = async (chatRoomId, messageContent) => {
 
     const account = await Account.findOne({_id: new mongoose.Types.ObjectId(messageContent.sender)})
 
-    console.log("IDDD")
-    console.log(messageContent.sender)
-    console.log(typeof messageContent.sender)
-    console.log('NAMEE')
-    console.log(account.firstName)
-
     const chatRoom = await ChatRoom.findOneAndUpdate({
         _id: new mongoose.Types.ObjectId(chatRoomId)
     },
@@ -101,10 +95,7 @@ const getAllMessages = async (chatRoomId) => {
 
 const getAllChatRooms = async (accountId) => {
     try {
-        console.log(accountId)
         const account = await Account.findOne({_id: new mongoose.Types.ObjectId(accountId)})
-        console.log("ACCOUNT")
-        console.log(account)
         if (account._id) {
             const chatRooms = await ChatRoom.find({members: account._id})
             return chatRooms
