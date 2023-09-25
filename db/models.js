@@ -6,6 +6,7 @@ import mongoose, { Schema, ObjectId } from "mongoose"
 // members are linked to chatroom (by Account ObjectId)
 const chatRoomSchema = new Schema({
     name: String,
+    picture: Buffer,
     lastMessage: {
         type: String,
         default: ""
@@ -48,6 +49,7 @@ const accountSchema = new Schema({
     username: String,
     email: String,
     password: String,
+    picture: Buffer,
     state: accountStateSchema
 })
 const Account = mongoose.model("Account", accountSchema)
