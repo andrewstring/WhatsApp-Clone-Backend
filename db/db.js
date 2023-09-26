@@ -151,8 +151,8 @@ const loginAccount = async ({username,password}) => {
         username: username,
         password: password
     })
-    credentials._id = credentials._id.toString()
     if (!Boolean(credentials)) return 2
+    credentials._id = credentials._id.toString()
     return credentials
 }
 
