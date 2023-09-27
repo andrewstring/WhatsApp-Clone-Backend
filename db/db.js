@@ -156,6 +156,14 @@ const loginAccount = async ({username,password}) => {
     return credentials
 }
 
+const getAccount = async (id) => {
+    const credentials = await Account.findOne({ _id: id })
+    if (Boolean(credentials)) {
+        return credentials
+    }
+    return null
+}
+
 export {
     dbConnect,
     addChatRoom,
@@ -163,5 +171,6 @@ export {
     getAllMessages,
     getAllChatRooms,
     createAccount,
-    loginAccount
+    loginAccount,
+    getAccount
 }

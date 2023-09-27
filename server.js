@@ -5,7 +5,8 @@ import { port } from "./config.js"
 // db imports
 import {
     dbConnect, addChatRoom, addMessage, getAllMessages,
-    getAllChatRooms, createAccount, loginAccount
+    getAllChatRooms, createAccount, loginAccount,
+    getAccount
 } from "./db/db.js"
 // middleware import
 import useMiddleware from "./middleware.js"
@@ -122,6 +123,25 @@ app.post("/account/login", async (req,res) => {
         }
     } catch (e) {
         res.status(500).json("Error logging in")
+    }
+})
+
+app.post("/account/get", async (req,res) => {
+    try {
+        const credentials = await getAccount(req.body.id)
+        if (credentials) {
+            res.send({
+                message: "Account Found",
+                account: credentials
+            })
+        } else {
+            res.send({
+                message: "No Account Found"
+            })
+        }
+
+    } catch (e) {
+        res.status(500).json("Error getting account")
     }
 })
 
