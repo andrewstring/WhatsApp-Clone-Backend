@@ -157,7 +157,7 @@ const loginAccount = async ({username,password}) => {
 }
 
 const getAccount = async (id) => {
-    const credentials = await Account.findOne({ _id: id })
+    const credentials = await Account.findOne({ _id: new mongoose.Types.ObjectId(id) })
     if (Boolean(credentials)) {
         return credentials
     }
