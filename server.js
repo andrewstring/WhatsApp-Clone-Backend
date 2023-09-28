@@ -1,5 +1,9 @@
 // express imports
 import express from "express"
+
+// library imports
+import multer from "multer"
+
 // config import
 import { port } from "./config.js"
 // db imports
@@ -8,8 +12,11 @@ import {
     getAllChatRooms, createAccount, loginAccount,
     getAccount
 } from "./db/db.js"
+
 // middleware import
 import useMiddleware from "./middleware.js"
+
+const multer = multer({ dest: "uploads/"})
 
 // app init
 const app = express()
