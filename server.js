@@ -16,7 +16,7 @@ import {
 // middleware import
 import useMiddleware from "./middleware.js"
 
-const multer = multer({ dest: "uploads/"})
+const upload = multer({ dest: "uploads/"})
 
 // app init
 const app = express()
