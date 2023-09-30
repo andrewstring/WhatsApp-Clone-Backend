@@ -59,7 +59,20 @@ app.post("/chatroom/new", async (req, res) => {
     } catch (e) {
         res.status(500).json({message: "Error creating new chat room"})
     }
-    
+})
+
+// update chatroom
+app.put("/chatroom/update", async (req, res) => {
+    try {
+        // need
+            // name
+            // picture
+            // id
+            // members
+
+    } catch (e) {
+        res.status(500).json({message: "Error updating chat room"})
+    }
 })
 
 
@@ -103,6 +116,15 @@ app.post("/account/new", async (req,res) => {
         }
     } catch (e) {
         res.status(500).json("Error creating user")
+    }
+})
+
+// update account
+app.put("account/update", async (req, res) => {
+    try {
+
+    } catch (e) {
+        res.status(500).json({message: "Error updating account"})
     }
 })
 
