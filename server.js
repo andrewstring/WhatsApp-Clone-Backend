@@ -64,11 +64,7 @@ app.post("/chatroom/new", async (req, res) => {
 // update chatroom
 app.put("/chatroom/update", async (req, res) => {
     try {
-        // need
-            // name
-            // picture
-            // id
-            // members
+        
 
     } catch (e) {
         res.status(500).json({message: "Error updating chat room"})
