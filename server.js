@@ -62,8 +62,10 @@ app.post("/chatroom/new", async (req, res) => {
 })
 
 // update chatroom
-app.put("/chatroom/update", async (req, res) => {
+app.put("/chatroom/update", upload.single("picture"), async (req, res) => {
     try {
+        console.log(req.file)
+        console.log(req.body)
         
 
     } catch (e) {
