@@ -34,6 +34,12 @@ const addChatRoom = async (name, id, additionalMemberIds) => {
     return false
 }
 
+const updateChatRoom  = async (chatId, name, picture, members) => {
+    const chat = await ChatRoom.findOne({_id: chatId})
+    // determine if chatId needs to be converted to ObjectId type
+
+}
+
 // returns true if additional members are added to chat
 // returns false if chatroom does not exist
 const addAdditionalMembersToChatRoom = async (chatId, additionalMemberIds) => {
