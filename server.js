@@ -19,11 +19,19 @@ import {
     getAccount
 } from "./db/db.js"
 
+// dirname filename import
+import { fileURLToPath } from "url"
+import { dirname } from "path"
+
 // middleware import
 import useMiddleware from "./middleware.js"
 
 
 const jsonParser = bodyParser.json()
+
+// dirname filename setup
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 
 // multer upload config
@@ -126,13 +134,16 @@ app.post("/message/newimage", imageUpload.single("attachment"), async(req,res) =
     }
 })
 
-app.get("/message/getimage/:id", async(req,res) => {
-    const id = req.params.id
-    res.sendFile(`./images/${id}`, (err) => {
-        if (err) {
+app.get("/message/getimage/:id", async(req,res,next) => {
+    try {
+        const id = req.params.id
+        res.sendFile(`images/${id}.jpeg`, {root: __dirname}, (err) => {
             next(err)
-        }
-    })
+        })
+    } catch (e) {
+        res.status(500).json("Error retrieving file")
+    }
+    
 })
 
 
