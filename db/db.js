@@ -37,7 +37,6 @@ const addChatRoom = async (name, id, additionalMemberIds) => {
 
 const updateChatRoom  = async (chatId, name, picture, members) => {
     const chat = await ChatRoom.findOne({_id: chatId})
-    // determine if chatId needs to be converted to ObjectId type
 
 }
 

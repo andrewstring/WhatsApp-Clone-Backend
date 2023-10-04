@@ -100,6 +100,10 @@ app.put("/chatroom/update", imageUpload.single("picture"), async (req, res) => {
     }
 })
 
+app.post("/chatroom/newimage", async (req, res) => {
+
+})
+
 
 // create new message in specific chatroom
 app.post("/message/new", async (req, res) => {
