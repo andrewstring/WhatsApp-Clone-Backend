@@ -115,8 +115,6 @@ app.post("/message/new", async (req, res) => {
 app.post("/message/newimage", imageUpload.single("attachment"), async(req,res) => {
     try {
         const upload = fs.readFile(`./${req.file.path}`)
-        console.log("UPLOADD")
-        console.log(upload)
         if (!upload) {
             res.status(500).json("Error uplading image")
         }
@@ -126,6 +124,15 @@ app.post("/message/newimage", imageUpload.single("attachment"), async(req,res) =
     } catch (e) {
         res.status(500).json("Error uplading image")
     }
+})
+
+app.get("/message/getimage/:id", async(req,res) => {
+    const id = req.params.id
+    res.sendFile(`./images/${id}`, (err) => {
+        if (err) {
+            next(err)
+        }
+    })
 })
 
 
