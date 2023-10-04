@@ -1,11 +1,14 @@
 // express imports
 import express from "express"
 
+import * as fs from "fs"
+
 // library imports
 import multer from "multer"
 
 // config import
-import { port } from "./config.js"
+import { port, dbUri as uri } from "./config.js"
+
 // db imports
 import {
     dbConnect, addChatRoom, addMessage, getAllMessages,
@@ -16,7 +19,16 @@ import {
 // middleware import
 import useMiddleware from "./middleware.js"
 
-const upload = multer({ dest: "uploads/"})
+// multer upload config
+const imageStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "./images")
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${file.originalname}`)
+    }
+})
+const imageUpload = multer({storage: imageStorage})
 
 // app init
 const app = express()
@@ -62,13 +74,13 @@ app.post("/chatroom/new", async (req, res) => {
 })
 
 // update chatroom
-app.put("/chatroom/update", upload.single("picture"), async (req, res) => {
+app.put("/chatroom/update", imageUpload.single("picture"), async (req, res) => {
     try {
-        console.log(req.file)
-        console.log(req.body)
-        
+        // const file = await req.file
+        // await fs.unlink(`./images/${file.name}`)
 
     } catch (e) {
+        console.log(e)
         res.status(500).json({message: "Error updating chat room"})
     }
 })
