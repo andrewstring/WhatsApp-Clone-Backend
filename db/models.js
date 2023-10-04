@@ -34,7 +34,8 @@ const messageSchema = new Schema({
     sender: ObjectId,
     senderName: String,
     received: Boolean,
-    timeSent: Date
+    timeSent: Date,
+    attachment: Boolean
 })
 const Message = mongoose.model("Message", messageSchema)
 

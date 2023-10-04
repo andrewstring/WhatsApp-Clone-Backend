@@ -67,7 +67,7 @@ const getAdditionalMembers = async (additionalMemberIds) => {
     return members
 }
 
-const addMessage = async (chatRoomId, messageContent) => {
+const addMessage = async (chatRoomId, messageContent, attachment) => {
     const currentTime = new Date()
 
     const account = await Account.findOne({_id: new mongoose.Types.ObjectId(messageContent.sender)})
@@ -83,11 +83,13 @@ const addMessage = async (chatRoomId, messageContent) => {
         sender: new mongoose.Types.ObjectId(messageContent.sender),
         senderName: account.firstName,
         received: messageContent.received,
-        timeSent: currentTime
+        timeSent: currentTime,
+        attachment: attachment
     })
     chatRoom.lastMessage = messageContent.content
     await message.save()
     await chatRoom.save()
+    return message._id
 }
 
 const getAllMessages = async (chatRoomId) => {

@@ -9,6 +9,9 @@ import multer from "multer"
 // config import
 import { port, dbUri as uri } from "./config.js"
 
+// bodyParser import
+import bodyParser from "body-parser"
+
 // db imports
 import {
     dbConnect, addChatRoom, addMessage, getAllMessages,
@@ -18,6 +21,10 @@ import {
 
 // middleware import
 import useMiddleware from "./middleware.js"
+
+
+const jsonParser = bodyParser.json()
+
 
 // multer upload config
 const imageStorage = multer.diskStorage({
@@ -88,17 +95,37 @@ app.put("/chatroom/update", imageUpload.single("picture"), async (req, res) => {
 
 // create new message in specific chatroom
 app.post("/message/new", async (req, res) => {
-    console.log(req.body)
+    
     try {
-        await addMessage(
+        const messageId = await addMessage(
             req.body.chatRoomId,
-            req.body.messageContent
-            )
-        res.send("Message added")
+            req.body.messageContent,
+            req.body.attachment
+        )
+        res.send({
+            message: "Message added",
+            id: messageId
+        })
     } catch (e) {
         res.status(500).json("Error creating new message")
     }
     
+})
+
+app.post("/message/newimage", imageUpload.single("attachment"), async(req,res) => {
+    try {
+        const upload = fs.readFile(`./${req.file.path}`)
+        console.log("UPLOADD")
+        console.log(upload)
+        if (!upload) {
+            res.status(500).json("Error uplading image")
+        }
+        res.send({message: "Successfully uploaded image"})
+
+
+    } catch (e) {
+        res.status(500).json("Error uplading image")
+    }
 })
 
 
