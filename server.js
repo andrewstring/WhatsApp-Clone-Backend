@@ -33,7 +33,6 @@ const jsonParser = bodyParser.json()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-
 // multer upload config
 const imageStorage = multer.diskStorage({
     destination: (req, file, cb) => {
