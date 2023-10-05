@@ -237,6 +237,7 @@ const start = async () => {
     try {
         await dbConnect()
         app.listen(port, async () => {
+            console.log(`Directory path: ${__dirname}`)
             console.log(`App listening on port: ${port}`)
         })
     } catch (e) {
