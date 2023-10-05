@@ -126,6 +126,7 @@ app.post("/message/new", async (req, res) => {
 app.post("/message/newimage", imageUpload.single("attachment"), async(req,res) => {
     try {
         const upload = fs.readFile(`${__dirname}${req.file.path}`)
+        console.log(`Uploading image to ${__dirname}${req.file.path}`)
         if (!upload) {
             res.status(500).json("Error uplading image")
         }
